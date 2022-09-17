@@ -1,17 +1,24 @@
 class Cliente:
 
-    def __init__(self, dpi, nombre):
+    def __init__(self, dpi, nombre, transacciones):
         self.dpi = dpi
         self.nombre = nombre
+        self.transacciones = transacciones
 
-    def getDPI(self):
+    def getId(self):
         return self.dpi
 
     def getNombre(self):
         return self.nombre
 
-    def setDPI(self, dpi):
+    def getTransacciones(self):
+        return self.transacciones
+
+    def setId(self, dpi):
         self.dpi = dpi
 
     def setNombre(self, nombre):
         self.nombre = nombre
+
+    def setTransacciones(self, transacciones):
+        self.transacciones = transacciones

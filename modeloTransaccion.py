@@ -1,9 +1,10 @@
 class Transaccion:
 
-    def __init__(self, id, nombre, tiempo):
+    def __init__(self, id=None, nombre=None, tiempo=None, cantidad=None):
         self.id = id
         self.nombre = nombre
         self.tiempo = tiempo
+        self.cantidad = cantidad
 
     def getId(self):
         return self.id
@@ -14,6 +15,9 @@ class Transaccion:
     def getTiempo(self):
         return self.tiempo
 
+    def getCantidad(self):
+        return self.cantidad
+
     def setId(self, id):
         self.id = id
 
@@ -22,3 +26,6 @@ class Transaccion:
 
     def setTiempo(self, tiempo):
         self.tiempo = tiempo
+
+    def setCantidad(self, cantidad):
+        self.cantidad = cantidad

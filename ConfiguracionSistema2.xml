@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<listaEmpresas>
+    <empresa id="empresa1">
+        <nombre>HiperPaiz</nombre>
+            <abreviatura>paiz</abreviatura>
+            <listaPuntosAtencion>
+                <puntoAtencion id="punto1">
+                    <nombre>MetroNorte</nombre>
+                    <direccion>zona 18</direccion>
+                        <listaEscritorios>
+                            <escritorio id="escritorio1">
+                                <identificacion>esc1</identificacion>
+                                <encargado>Juan</encargado>
+                            </escritorio>
+                            <escritorio id="escritorio2">
+                                <identificacion>esc2</identificacion>
+                                <encargado>Sofia</encargado>
+                            </escritorio>
+                            <escritorio id="escritorio3">
+                                <identificacion>esc3</identificacion>
+                                <encargado>Oscar</encargado>
+                            </escritorio>
+                        </listaEscritorios>
+                </puntoAtencion>
+                <puntoAtencion id="punto2">
+                    <nombre>SantaClara</nombre>
+                    <direccion>zona 21</direccion>
+                        <listaEscritorios>
+                            <escritorio id="escritorio1">
+                                <identificacion>esc1</identificacion>
+                                <encargado>Patricia</encargado>
+                            </escritorio>
+                        </listaEscritorios>
+                </puntoAtencion>
+            </listaPuntosAtencion>
+            <listaTransacciones>
+                <transaccion id="transaccion1">
+                    <nombre>Trans</nombre>
+                        <tiempoAtencion>15</tiempoAtencion>
+                </transaccion>
+                    ...
+            </listaTransacciones>
+    </empresa>
+</listaEmpresas>

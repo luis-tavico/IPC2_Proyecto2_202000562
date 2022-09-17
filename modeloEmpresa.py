@@ -1,9 +1,11 @@
 class Empresa:
 
-    def __init__(self, id, nombre, abreviatura):
+    def __init__(self, id, nombre, abreviatura, puntosAtencion, transacciones):
         self.id = id
         self.nombre = nombre
         self.abreviatura = abreviatura
+        self.puntosAtencion = puntosAtencion 
+        self.transacciones = transacciones
 
     def getId(self):
         return self.id
@@ -14,6 +16,12 @@ class Empresa:
     def getAbreviatura(self):
         return self.abreviatura
 
+    def getPuntosDeAtencion(self):
+        return self.puntosAtencion
+    
+    def getTransacciones(self):
+        return self.transacciones
+
     def setId(self, id):
         self.id = id
 
@@ -22,3 +30,9 @@ class Empresa:
 
     def setAbreviatura(self, abreviatura):
         self.abreviatura = abreviatura
+
+    def setPuntosDeAtencion(self, puntosAtencion):
+        self.puntosAtencion = puntosAtencion
+
+    def setTransacciones(self, transacciones):
+        self.transacciones = transacciones
