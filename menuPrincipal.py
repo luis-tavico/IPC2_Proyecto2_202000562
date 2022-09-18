@@ -36,12 +36,14 @@ class menuPrincipal:
                             opcion = int(input("Ingrese una opcion: "))
                             if opcion == 1:
                                 #ConfiguracionSistema.xml
-                                ruta = input("Ingrese la ruta del archivo -> ")
+                                #ruta = input("Ingrese la ruta del archivo -> ")
+                                ruta = "ConfiguracionSistema2.xml"
                                 archivo = CargarArchivo()
                                 archivo.leerArchivoConfiguracionSistema(ruta, self.listaEmpresas)
                             elif opcion == 2:
                                 #ConfiguracionInicial.xml
-                                ruta = input("Ingrese la ruta del archivo -> ")
+                                #ruta = input("Ingrese la ruta del archivo -> ")
+                                ruta = "ConfiguracionInicial2.xml"
                                 archivo = CargarArchivo()
                                 archivo.leerArchivoConfiguracionInicial(ruta, self.listaEmpresas)         
                             elif opcion == 3:     
@@ -128,9 +130,10 @@ class menuPrincipal:
                             print("|", empresaEnLista.dato.getId(), (9-len(str(empresaEnLista.dato.getId())))*(" "), "|", empresaEnLista.dato.getNombre(), (19-len(empresaEnLista.dato.getNombre()))*(" "), ("|"))
                             empresaEnLista = empresaEnLista.siguiente
                         print(" ----------------------------------- ")
-                        idEmpresa = input("Ingrese el id de la empresa: ")            
-                        empresa = self.listaEmpresas.buscar(idEmpresa)
+                        nombreEmpresa = input("Ingrese el nombre de la empresa: ")            
+                        empresa = self.listaEmpresas.buscarNombre(nombreEmpresa)
                         if empresa != None:
+                            listaTransaccionesEnEmpresa = empresa.dato.getTransacciones()
                             listaPuntosAtencion = empresa.dato.getPuntosDeAtencion().valores()
                             print(" --------------------------------------------------------- ")
                             print("|     Id     |        Nombre        |      Direccion      |")
@@ -139,11 +142,25 @@ class menuPrincipal:
                                 print("|", listaPuntosAtencion.dato.getId(), (9-len(str(listaPuntosAtencion.dato.getId())))*(" "), "|", listaPuntosAtencion.dato.getNombre(), (19-len(listaPuntosAtencion.dato.getNombre()))*(" "), "|", listaPuntosAtencion.dato.getDireccion(), (18-len(listaPuntosAtencion.dato.getDireccion()))*(" "), ("|"))
                                 listaPuntosAtencion = listaPuntosAtencion.siguiente
                             print(" --------------------------------------------------------- ")
-                            idPunto = input("Ingrese el id del punto de atencion: ")  
-                            listaPuntosAtencion = empresa.dato.getPuntosDeAtencion()
-                            if idPunto != None:    
-                                punto = listaPuntosAtencion.buscar(idPunto)
+                            nombrePunto = input("Ingrese el nombre del punto de atencion: ")  
+                            listaPuntosAtencion = empresa.dato.getPuntosDeAtencion()                         
+                            punto = listaPuntosAtencion.buscarNombre(nombrePunto)
+                            if punto != None:
                                 listaEscritorios = punto.dato.getEscritorios()
+                                listaClientes = punto.dato.getClientes().valores()
+                                tiempo = 0
+                                while listaClientes != None:
+                                    listaTransacciones = listaClientes.dato.getTransacciones().valores()
+                                    while listaTransacciones != None:
+                                        #print(listaTransacciones.dato.getId())   
+                                            tra = listaTransaccionesEnEmpresa.buscarId(listaTransacciones.dato.getId())
+                                            print(tra.dato.getTiempo())
+                                            tiempo += (int(tra.dato.getTiempo())*int(listaTransacciones.dato.getCantidad()))
+                                            listaTransacciones = listaTransacciones.siguiente
+                                    listaClientes = listaClientes.siguiente
+                                listaClientes = punto.dato.getClientes()
+                                print("Tiempo:", tiempo, "minutos")
+                                print("Clientes en espera de atencion:", listaClientes.longitud())
                                 #cantidad = listaEscritorios.longitud()
                                 listaEscritorios = punto.dato.getEscritorios().valores()
                                 escritoriosActivos = 0

@@ -38,8 +38,8 @@ class CargarArchivo:
                     idTransaccion = transaccion.attrib['id']
                     nombreTransaccion = transaccion.find('nombre').text
                     tiempoAtencion = transaccion.find('tiempoAtencion').text
-            nuevaTransaccion = Transaccion(idTransaccion, nombreTransaccion, tiempoAtencion)
-            listaTransacciones.insertar(nuevaTransaccion)
+                    nuevaTransaccion = Transaccion(id=idTransaccion, nombre=nombreTransaccion, tiempo=tiempoAtencion)
+                    listaTransacciones.insertar(nuevaTransaccion)
             nuevaEmpresa = Empresa(idEmpresa, nombreEmpresa, abreviaturaEmpresa, listaPuntosAtencion, listaTransacciones)
             listaEmpresas.insertar(nuevaEmpresa)
 
@@ -72,34 +72,37 @@ class CargarArchivo:
         archivo_xml = ET.parse(ruta)
         estadoInicial = archivo_xml.getroot()
 
-        listaClientes = listaEnlazada()
-        listaTransacciones = listaEnlazada()
         for configInicial in estadoInicial:
             id = configInicial.attrib['id']
             idEmpresa = configInicial.attrib['idEmpresa']      
             idPunto = configInicial.attrib['idPunto']
-            empresa = listaEmpresas.buscar(idEmpresa)
+            empresa = listaEmpresas.buscarId(idEmpresa)
             listaPuntos = empresa.dato.getPuntosDeAtencion()
-            punto = listaPuntos.buscar(idPunto)
+            punto = listaPuntos.buscarId(idPunto)
             listaEscritorios = punto.dato.getEscritorios()
             for escritoriosActivos in configInicial.findall('escritoriosActivos'):
                 for escritorio in escritoriosActivos:
                     idEscritorio = escritorio.attrib['idEscritorio']
-                    escritorio = listaEscritorios.buscar(idEscritorio)
+                    escritorio = listaEscritorios.buscarId(idEscritorio)
                     escritorio.dato.setEstado(True)
+            listaClientes = listaEnlazada()
             for clientes in configInicial.findall('listadoClientes'):  
                 for cliente in clientes:
                     dpiCliente = cliente.attrib['dpi']
                     nombreCliente = cliente.find('nombre').text
+                    listaTransacciones = listaEnlazada()
                     for listadoTransacciones in cliente.findall('listadoTransacciones'):
                         for transaccion in listadoTransacciones:
                             idTransaccion = transaccion.attrib['idTransaccion']
                             cantidad = transaccion.attrib['cantidad']
-        nuevaTransaccion = Transaccion(id=idTransaccion, cantidad=cantidad)
-        listaTransacciones.insertar(nuevaTransaccion)
-        nuevoCliente = Cliente(dpiCliente, nombreCliente, listaTransacciones)
-        listaClientes.insertar(nuevoCliente)
-        
+                            nuevaTransaccion = Transaccion(id=idTransaccion, cantidad=cantidad)
+                            listaTransacciones.insertar(nuevaTransaccion)
+                    nuevoCliente = Cliente(dpiCliente, nombreCliente, listaTransacciones)
+                    listaClientes.insertar(nuevoCliente)
+                    punto.dato.setClientes(listaClientes)
+
+
+
         '''clientesEnLista = listaClientes.valores()
         print(clientesEnLista.dato.getId())
         print(clientesEnLista.dato.getNombre())'''

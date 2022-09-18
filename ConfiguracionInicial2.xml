@@ -4,19 +4,21 @@
         <escritoriosActivos>
             <escritorio idEscritorio="escritorio1" />
             <escritorio idEscritorio="escritorio3" />
-            ...
         </escritoriosActivos>
         <listadoClientes>
             <cliente dpi="3004359830101">
                 <nombre>Adolfo</nombre>
                 <listadoTransacciones>
-                    <transaccion idTransaccion="trans1" cantidad="100" />
-                    <transaccion idTransaccion="trans2" cantidad="50" />
-                    ...
+                    <transaccion idTransaccion="transaccionUno" cantidad="2" />
+                    <transaccion idTransaccion="transaccionDos" cantidad="1" />
                 </listadoTransacciones>
             </cliente>
-            ...
+            <cliente dpi="3408359830101">
+                <nombre>Sofia</nombre>
+                <listadoTransacciones>
+                    <transaccion idTransaccion="transaccionDos" cantidad="2" />
+                </listadoTransacciones>
+            </cliente>
         </listadoClientes>
     </configInicial>
-        ...
 </listadoInicial>

@@ -1,10 +1,11 @@
 class PuntoAtencion:
     
-    def __init__(self, id, nombre, direccion, escritorios):
+    def __init__(self, id, nombre, direccion, escritorios, clientes=None):
         self.id = id
         self.nombre = nombre
         self.direccion = direccion
         self.escritorios = escritorios
+        self.clientes = clientes
 
     def getId(self):
         return self.id
@@ -18,6 +19,9 @@ class PuntoAtencion:
     def getEscritorios(self):
         return self.escritorios
 
+    def getClientes(self):
+        return self.clientes
+
     def setId(self, id):
         self.id = id
 
@@ -29,3 +33,6 @@ class PuntoAtencion:
     
     def setEscritorios(self, escritorios):
         self.escritorios = escritorios
+
+    def setClientes(self, clientes):
+        self.clientes = clientes

@@ -41,11 +41,24 @@ class listaEnlazada:
             anterior.siguiente = actual.siguiente
             actual.siguiente = None
 
-    def buscar(self, id):
+    def buscarId(self, id):
         actual = self.primero
         anterior = None
 
         while actual and actual.dato.getId() != id:
+            anterior = actual
+            actual = actual.siguiente
+            
+        if actual != None:
+            return actual  
+        else:
+            return
+
+    def buscarNombre(self, nombre):
+        actual = self.primero
+        anterior = None
+
+        while actual and actual.dato.getNombre().lower() != nombre.lower():
             anterior = actual
             actual = actual.siguiente
             
