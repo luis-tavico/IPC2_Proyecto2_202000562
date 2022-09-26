@@ -26,20 +26,36 @@ class listaEnlazada:
     def longitud(self):
         return self.tamanio
 
-    def eliminar(self):
+    def eliminarPrimero(self):
+        primero = self.primero
+        if self.primero != None:            
+            self.primero = self.primero.siguiente
+        if primero != None:
+            primero.siguiente = None
+            self.tamanio -= 1
+        return primero
+
+    def eliminarUltimo(self):
         actual = self.primero
         anterior = None
-    
-        while actual and actual.siguiente != None:
-            anterior = actual
-            actual = actual.siguiente
+        ultimo = None
+        
+        if actual != None:
+            while actual and actual.siguiente != None:
+                anterior = actual
+                actual = actual.siguiente
 
-        if anterior is None:
-            self.primero = actual.siguiente
-            actual.siguiente = None
-        elif actual:
-            anterior.siguiente = actual.siguiente
-            actual.siguiente = None
+            if anterior is None:
+                ultimo = self.primero
+                self.primero = actual.siguiente
+                actual.siguiente = None
+                self.tamanio -= 1
+            elif actual:
+                ultimo = anterior.siguiente
+                anterior.siguiente = actual.siguiente
+                actual.siguiente = None
+                self.tamanio -= 1
+        return ultimo
 
     def buscarId(self, id):
         actual = self.primero
@@ -66,3 +82,45 @@ class listaEnlazada:
             return actual  
         else:
             return
+
+    def buscarPosicion(self, posicion):
+        pos = 1
+        if posicion > 0:
+            actual = self.primero
+            anterior = None
+
+            while actual and pos != posicion :
+                pos += 1
+                anterior = actual
+                actual = actual.siguiente
+                
+            if actual != None:
+                return actual  
+            else:
+                return
+        else:
+            return
+
+    def recorrer(self):
+        actual = self.primero
+        while actual != None:
+            print(actual.dato)
+            actual = actual.siguiente
+
+'''lista = listaEnlazada()
+lista.insertar(1)
+lista.insertar(2)
+lista.insertar(3)
+lista.insertar(4)
+
+lista.recorrer()
+
+eliminado = lista.eliminar()
+print(eliminado.dato)
+
+lista.recorrer()
+
+eliminado = lista.eliminar()
+print(eliminado.dato)
+
+lista.recorrer()'''

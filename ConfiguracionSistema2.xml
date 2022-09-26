@@ -34,11 +34,11 @@
                 </puntoAtencion>
             </listaPuntosAtencion>
             <listaTransacciones>
-                <transaccion id="transaccionUno">
+                <transaccion id="transaccion1">
                     <nombre>TransUno</nombre>
                         <tiempoAtencion>15</tiempoAtencion>
                 </transaccion>
-                <transaccion id="transaccionDos">
+                <transaccion id="transaccion2">
                     <nombre>TransDos</nombre>
                         <tiempoAtencion>10</tiempoAtencion>
                 </transaccion>

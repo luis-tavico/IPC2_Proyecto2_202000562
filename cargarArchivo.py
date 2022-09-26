@@ -80,14 +80,18 @@ class CargarArchivo:
             listaPuntos = empresa.dato.getPuntosDeAtencion()
             punto = listaPuntos.buscarId(idPunto)
             listaEscritorios = punto.dato.getEscritorios()
+            listaEscritoriosActivos = listaEnlazada()
             for escritoriosActivos in configInicial.findall('escritoriosActivos'):
                 for escritorio in escritoriosActivos:
                     idEscritorio = escritorio.attrib['idEscritorio']
                     escritorio = listaEscritorios.buscarId(idEscritorio)
+                    listaEscritoriosActivos.insertar(escritorio.dato)
                     escritorio.dato.setEstado(True)
+            punto.dato.setEscritoriosActivos(listaEscritoriosActivos)
             listaClientes = listaEnlazada()
             for clientes in configInicial.findall('listadoClientes'):  
                 for cliente in clientes:
+                    punto.dato.setTurnoEnPunto()
                     dpiCliente = cliente.attrib['dpi']
                     nombreCliente = cliente.find('nombre').text
                     listaTransacciones = listaEnlazada()
