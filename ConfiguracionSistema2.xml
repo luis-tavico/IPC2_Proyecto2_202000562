@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
 <listaEmpresas>
     <empresa id="empresa1">
-        <nombre>HiperPaiz</nombre>
+        <nombre>Walmart</nombre>
             <abreviatura>paiz</abreviatura>
             <listaPuntosAtencion>
                 <puntoAtencion id="punto1">
-                    <nombre>MetroNorte</nombre>
+                    <nombre>Metro Norte</nombre>
                     <direccion>zona 18</direccion>
                         <listaEscritorios>
                             <escritorio id="escritorio1">
@@ -23,7 +23,7 @@
                         </listaEscritorios>
                 </puntoAtencion>
                 <puntoAtencion id="punto2">
-                    <nombre>SantaClara</nombre>
+                    <nombre>Santa Clara</nombre>
                     <direccion>zona 21</direccion>
                         <listaEscritorios>
                             <escritorio id="escritorio1">

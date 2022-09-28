@@ -1,10 +1,11 @@
 class Escritorio:
 
-    def __init__(self, id, identificacionEscritorio, nombreEncargado, estado):
+    def __init__(self, id, identificacionEscritorio, nombreEncargado, estado, clientesAtendidos):
         self.id = id
         self.identificacionEscritorio = identificacionEscritorio
         self.nombreEncargado = nombreEncargado
         self.estado = estado
+        self.clientesAtendidos = clientesAtendidos
 
     def getId(self):
         return self.id
@@ -18,6 +19,9 @@ class Escritorio:
     def getEstado(self):
         return self.estado
 
+    def getClientesAtendidos(self):
+        return self.clientesAtendidos
+
     def setId(self, id):
         self.id = id
 
@@ -29,3 +33,6 @@ class Escritorio:
 
     def setEstado(self, estado):
         self.estado = estado
+    
+    def setClientesAtendidos(self, clientesAtendidos):
+        self.clientesAtendidos = clientesAtendidos

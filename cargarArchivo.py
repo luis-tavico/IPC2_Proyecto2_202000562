@@ -29,9 +29,9 @@ class CargarArchivo:
                             idEscritorio = escritorio.attrib['id']
                             identificacion = escritorio.find('identificacion').text
                             nombreEncargado = escritorio.find('encargado').text
-                            nuevoEscritorio = Escritorio(idEscritorio, identificacion, nombreEncargado, False)
+                            nuevoEscritorio = Escritorio(idEscritorio, identificacion, nombreEncargado, False, listaEnlazada())
                             listaEscritorios.insertar(nuevoEscritorio)
-                    nuevoPuntoAtencion = PuntoAtencion(idPuntoAtencion, nombrePuntoServicio, direccionPuntoServicio, listaEscritorios)
+                    nuevoPuntoAtencion = PuntoAtencion(idPuntoAtencion, nombrePuntoServicio, direccionPuntoServicio, listaEscritorios, listaEnlazada(), listaEnlazada())
                     listaPuntosAtencion.insertar(nuevoPuntoAtencion)
             for transacciones in empresa.findall('listaTransacciones'):
                 for transaccion in transacciones:
@@ -80,15 +80,14 @@ class CargarArchivo:
             listaPuntos = empresa.dato.getPuntosDeAtencion()
             punto = listaPuntos.buscarId(idPunto)
             listaEscritorios = punto.dato.getEscritorios()
-            listaEscritoriosActivos = listaEnlazada()
+            listaEscritoriosActivos = punto.dato.getEscritoriosActivos()
+            listaClientes = punto.dato.getClientes()
             for escritoriosActivos in configInicial.findall('escritoriosActivos'):
                 for escritorio in escritoriosActivos:
                     idEscritorio = escritorio.attrib['idEscritorio']
                     escritorio = listaEscritorios.buscarId(idEscritorio)
                     listaEscritoriosActivos.insertar(escritorio.dato)
                     escritorio.dato.setEstado(True)
-            punto.dato.setEscritoriosActivos(listaEscritoriosActivos)
-            listaClientes = listaEnlazada()
             for clientes in configInicial.findall('listadoClientes'):  
                 for cliente in clientes:
                     punto.dato.setTurnoEnPunto()
@@ -103,8 +102,6 @@ class CargarArchivo:
                             listaTransacciones.insertar(nuevaTransaccion)
                     nuevoCliente = Cliente(dpiCliente, nombreCliente, listaTransacciones)
                     listaClientes.insertar(nuevoCliente)
-                    punto.dato.setClientes(listaClientes)
-
 
 
         '''clientesEnLista = listaClientes.valores()
