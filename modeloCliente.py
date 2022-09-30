@@ -1,9 +1,11 @@
 class Cliente:
 
-    def __init__(self, dpi, nombre, transacciones):
+    def __init__(self, dpi, nombre, transacciones, tiempoEnEspera, tiempoEnAtencion):
         self.dpi = dpi
         self.nombre = nombre
         self.transacciones = transacciones
+        self.tiempoEnEspera = tiempoEnEspera
+        self.tiempoEnAtencion = tiempoEnAtencion
 
     def getId(self):
         return self.dpi
@@ -14,6 +16,12 @@ class Cliente:
     def getTransacciones(self):
         return self.transacciones
 
+    def getTiempoEnEspera(self):
+        return self.tiempoEnEspera
+
+    def getTiempoEnAtencion(self):
+        return self.tiempoEnAtencion
+
     def setId(self, dpi):
         self.dpi = dpi
 
@@ -22,3 +30,9 @@ class Cliente:
 
     def setTransacciones(self, transacciones):
         self.transacciones = transacciones
+
+    def setTiempoEnEspera(self, tiempoEnEspera):
+        self.tiempoEnEspera = tiempoEnEspera
+
+    def setTiempoEnAtencion(self, tiempoEnAtencion):
+        self.tiempoEnAtencion = tiempoEnAtencion

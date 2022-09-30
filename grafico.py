@@ -9,7 +9,7 @@ class Grafico:
         self.graphviz += 'digraph {\n    ranksep="0.1"\n    graph[pad="0.5"];\n    node [fontname="Arial" shape="plain"]\n    edge[dir="none" style="invisible"]\n'
         self.graphviz += '    NombreEmpresa[label="'+nombreEmpresa+'" fontcolor=blue]\n'
 
-    def puntoAtencion(self, nombrePunto, activos, inactivos, clientesE, tiempoMinimoE, tiempoPromedioE, tiempoMaximoE, tiempoMinimoA, tiempoPromedioA, tiempoMaximoA):
+    def puntoAtencion(self, nombrePunto, activos, inactivos, clientesE, clientesA, tiempoMinimoE, tiempoPromedioE, tiempoMaximoE, tiempoMinimoA, tiempoPromedioA, tiempoMaximoA):
         self.graphviz += '    NombrePunto [label="\n'+nombrePunto+'" fontcolor=blue];\n'
         self.graphviz += '    TablaPunto [label=<<table border="0" cellborder="0" cellspacing="5">\n'
         self.graphviz += '    <tr><td>Escritorios</td><td>Clientes</td><td>Tiempo de Espera</td><td>Tiempo de Atencion</td></tr>\n'
@@ -17,8 +17,8 @@ class Grafico:
         self.graphviz += '        <tr><td>Activos</td><td>Inactivos</td></tr>\n'
         self.graphviz += '        <tr><td>'+str(activos)+'</td><td>'+str(inactivos)+'</td>'
         self.graphviz += '    </tr></table></td><td><table border="0" cellborder="1" cellspacing="0">\n'
-        self.graphviz += '        <tr><td>En espera</td></tr>\n'
-        self.graphviz += '        <tr><td>'+str(clientesE)+'</td></tr></table></td>\n'
+        self.graphviz += '        <tr><td>En espera</td><td>Atendidos</td></tr>\n'
+        self.graphviz += '        <tr><td>'+str(clientesE)+'</td><td>'+str(clientesA)+'</td></tr></table></td>\n'
         self.graphviz += '    <td><table border="0" cellborder="1" cellspacing="0">\n'
         self.graphviz += '        <tr><td>Minimo</td><td>Promedio</td><td>Maximo</td></tr>\n'
         self.graphviz += '        <tr><td>'+tiempoMinimoE+'</td><td>'+tiempoPromedioE+'</td><td>'+tiempoMaximoE+'</td>\n'
@@ -54,11 +54,3 @@ class Grafico:
             grafica.write(self.graphviz)
         pdf = 'reporte.pdf'
         os.system("dot.exe -Tpdf " + txt + " -o " + pdf)
-
-'''graficar = Grafico()
-graficar.encabezado("WALMART")
-graficar.puntoAtencion("Santa Clara", 2, 1, 7, "30 minutos", "1 hora", "1 hora 15 minutos", "30 minutos", "1 hora", "1 hora 15 minutos")
-graficar.escritorio(1, "esc123", "30 minutos", "1 hora", "1 hora 15 minutos", 5)
-graficar.escritorio(2, "esc456", "30 minutos", "1 hora", "1 hora 15 minutos", 5)
-graficar.escritorio(3, "esc456", "30 minutos", "1 hora", "1 hora 15 minutos", 5)
-graficar.exportar()'''

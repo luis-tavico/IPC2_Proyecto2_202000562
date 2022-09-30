@@ -1,4 +1,3 @@
-from decimal import DivisionUndefined
 from cargarArchivo import CargarArchivo
 from listaEnlazada import listaEnlazada
 from modeloEmpresa import Empresa
@@ -6,9 +5,9 @@ from modeloPuntoAtencion import PuntoAtencion
 from modeloCliente import Cliente
 from modeloEscritorio import Escritorio
 from modeloTransaccion import Transaccion
-from graphviz import Grafico
+from grafico import Grafico
 
-class menuPrincipal:
+class MenuPrincipal:
     
     def __init__(self):
         self.listaEmpresas = listaEnlazada()
@@ -35,21 +34,20 @@ class menuPrincipal:
                         print("| 4. Regresar al Menu Principal                  |")
                         print(" ------------------------------------------------ ")
                         try:
+                            archivo = CargarArchivo(self.listaEmpresas)
                             opcion = int(input("Ingrese una opcion: "))
                             if opcion == 1:
                                 #ConfiguracionSistema.xml
                                 #ruta = input("Ingrese la ruta del archivo -> ")
-                                ruta = "ConfiguracionSistema2.xml"
-                                archivo = CargarArchivo()
-                                archivo.leerArchivoConfiguracionSistema(ruta, self.listaEmpresas)
+                                ruta = "ConfiguracionSistema.xml"
+                                archivo.leerArchivoConfiguracionSistema(ruta)
                             elif opcion == 2:
                                 if self.listaEmpresas.valores() != None:
-                                #ConfiguracionInicial.xml
-                                #ruta = input("Ingrese la ruta del archivo -> ")
-                                    ruta = "ConfiguracionInicial2.xml"
-                                    archivo = CargarArchivo()
-                                    archivo.leerArchivoConfiguracionInicial(ruta, self.listaEmpresas)  
-                                else: print("¡Sistema vacio!")                                
+                                    #ConfiguracionInicial.xml
+                                    #ruta = input("Ingrese la ruta del archivo -> ")
+                                    ruta = "ConfiguracionInicial.xml"
+                                    archivo.leerArchivoConfiguracionInicial(ruta)  
+                                else: print("¡Sistema vacio! No se pudo aplicar la configuracion")                                
                             elif opcion == 3:   
                                 print(" ------------------Crear/Editar------------------ ")                          
                                 print("| 1. Crear Empresa                               |")
@@ -93,7 +91,7 @@ class menuPrincipal:
                                             print("----------Nueva Transaccion-----------")
                                             idTransaccion = input("Ingrese el id de la transaccion: ")
                                             nombreTransaccion = input("Ingrese el nombre de la transaccion: ")    
-                                            tiempoTransaccion = input("Ingrese el tiempo de la transaccion: ")         
+                                            tiempoTransaccion = int(input("Ingrese el tiempo de la transaccion: "))         
                                             transaccion = Transaccion(id=idTransaccion, nombre=nombreTransaccion, tiempo=tiempoTransaccion)
                                             listaTransacciones.insertar(transaccion)
                                             print("¡Transaccion agregada exitosamente!")                          
@@ -137,8 +135,6 @@ class menuPrincipal:
                         except FileNotFoundError:
                             print("¡El archivo no existe!")                     
                 elif opcion == 2:
-                    #ConfiguracionSistema2.xml
-                    #ConfiguracionInicial2.xml
                     resultado = self.mostrarEmpresas()
                     if resultado == False: continue
                     posicion = int(input("Ingrese un numero: "))                                 
@@ -165,125 +161,24 @@ class menuPrincipal:
                         try:
                             opcion = int(input("Ingrese una opcion: "))
                             if opcion == 1:
-                                listaEscritorios = punto.dato.getEscritorios()
-                                if punto.dato.getClientes() != None:
-                                    listaClientes = punto.dato.getClientes().valores()
-                                    tiempo = 0                  
-                                    tiempoMinEspera = 0
-                                    tiempoPromEspera = 0
-                                    tiempoMaxEspera = 0
-                                    while listaClientes != None:
-                                        listaTransaccionesCliente = listaClientes.dato.getTransacciones().valores()
-                                        tiempo = 0
-                                        while listaTransaccionesCliente != None: 
-                                            transaccion = listaTransacciones.buscarId(listaTransaccionesCliente.dato.getId())
-                                            tiempo += (int(transaccion.dato.getTiempo())*int(listaTransaccionesCliente.dato.getCantidad())) 
-                                            listaTransaccionesCliente = listaTransaccionesCliente.siguiente
-                                        if tiempoMinEspera == 0:
-                                            tiempoMinEspera = tiempo
-                                        tiempoPromEspera += tiempo
-                                        tiempoMaxEspera += tiempo           
-                                        listaClientes = listaClientes.siguiente
-                                    listaClientes = punto.dato.getClientes()
-                                    tiempoMaxEspera = tiempoMaxEspera - tiempo 
-                                    if listaClientes.longitud() > 0:
-                                        tiempoPromEspera = ((int(tiempoPromEspera))/listaClientes.longitud())
-                                    tiempoMinEspera = self.convertirTiempo(tiempoMinEspera)
-                                    tiempoMaxEspera = self.convertirTiempo(tiempoMaxEspera)
-                                    tiempoPromEspera = self.convertirTiempo(tiempoPromEspera)
-                                    print("Tiempo:", tiempo, "minutos")
-                                    print("Tiempo Espera Minimo:", tiempoMinEspera)
-                                    print("Tiempo Espera Promedio:", tiempoPromEspera)
-                                    print("Tiempo Espera Maximo:", tiempoMaxEspera)
-                                    print("Clientes en espera de atencion:", listaClientes.longitud())
-                                listaEscritorios = punto.dato.getEscritorios().valores()
-                                escritoriosActivos = 0
-                                escritoriosInactivos = 0
-                                tiempoMinAtencion = 0
-                                tiempoPromAtencion = 0
-                                tiempoMaxAtencion = 0
-                                while listaEscritorios != None:
-                                    listaclientesAtendidos = listaEscritorios.dato.getClientesAtendidos().valores()
-                                    while listaclientesAtendidos != None:
-                                        listaTransaccionesCliente = listaclientesAtendidos.dato.getTransacciones().valores()
-                                        tiempo = 0
-                                        while listaTransaccionesCliente != None:
-                                            transaccion = listaTransacciones.buscarId(listaTransaccionesCliente.dato.getId())
-                                            tiempo += (int(transaccion.dato.getTiempo())*int(listaTransacciones.dato.getCantidad()))
-                                            listaTransaccionesCliente = listaTransaccionesCliente.siguiente
-                                        tiempoPromAtencion += tiempo
-                                        if tiempo > tiempoMaxAtencion:
-                                            tiempoMaxAtencion = tiempo
-                                        if tiempoMinAtencion == 0:
-                                            tiempoMinAtencion = tiempo
-                                        if tiempo < tiempoMinAtencion:
-                                            tiempoMinAtencion = tiempo
-                                        listaclientesAtendidos = listaclientesAtendidos.siguiente
-                                    if listaEscritorios.dato.getEstado() == True:
-                                        escritoriosActivos += 1
-                                    else:
-                                        escritoriosInactivos += 1
-                                    listaEscritorios = listaEscritorios.siguiente
-                                print("Escritorios activos:",str(escritoriosActivos))
-                                print("Escritorios inactivos:",str(escritoriosInactivos))
-                                if listaClientes.longitud() > 0:
-                                    tiempoPromAtencion = ((int(tiempoPromAtencion))/listaClientes.longitud())                                 
-                                tiempoPromAtencion = self.convertirTiempo(tiempoPromAtencion)
-                                tiempoMinAtencion = self.convertirTiempo(tiempoMinAtencion)
-                                tiempoMaxAtencion = self.convertirTiempo(tiempoMaxAtencion)
-                                print("Tiempo:", tiempo, "minutos")
-                                print("Tiempo Atencion Minimo:", tiempoMinAtencion)
-                                print("Tiempo Atencion Promedio:", tiempoPromAtencion)
-                                print("Tiempo Atencion Maximo:", tiempoMaxAtencion)
                                 graficar = Grafico()
                                 graficar.encabezado(empresa.dato.getNombre().upper())
-                                graficar.puntoAtencion(punto.dato.getNombre(), escritoriosActivos, escritoriosInactivos, listaClientes.longitud(), tiempoMinEspera, tiempoPromEspera, tiempoMaxEspera, tiempoMinAtencion, tiempoPromAtencion, tiempoMaxAtencion)
-                                listaEscritoriosActivos = punto.dato.getEscritoriosActivos().valores()
-                                numero = 0
-                                while listaEscritoriosActivos != None:
-                                    numero += 1
-                                    clientesAtendidos = listaEscritoriosActivos.dato.getClientesAtendidos().longitud()
-                                    listaclientesAtendidos = listaEscritoriosActivos.dato.getClientesAtendidos().valores()
-                                    tiempoMinAtencion = 0
-                                    tiempoPromAtencion = 0
-                                    tiempoMaxAtencion = 0
-                                    while listaclientesAtendidos != None:
-                                        listaTransaccionesCliente = listaclientesAtendidos.dato.getTransacciones().valores()
-                                        tiempo = 0
-                                        while listaTransaccionesCliente != None:
-                                            transaccion = listaTransacciones.buscarId(listaTransaccionesCliente.dato.getId())
-                                            tiempo += (int(transaccion.dato.getTiempo())*int(listaTransacciones.dato.getCantidad()))
-                                            listaTransaccionesCliente = listaTransaccionesCliente.siguiente  
-                                        tiempoPromAtencion += tiempo
-                                        if clientesAtendidos > 0:
-                                            tiempoPromAtencion = int(tiempoPromAtencion/clientesAtendidos)
-                                        if tiempo > tiempoMaxAtencion:
-                                            tiempoMaxAtencion = tiempo
-                                        if tiempoMinAtencion == 0:
-                                            tiempoMinAtencion = tiempo
-                                        if tiempo < tiempoMinAtencion:
-                                            tiempoMinAtencion = tiempo
-                                        listaclientesAtendidos = listaclientesAtendidos.siguiente
-                                    tiempoPromAtencion = self.convertirTiempo(tiempoPromAtencion)
-                                    tiempoMinAtencion = self.convertirTiempo(tiempoMinAtencion)
-                                    tiempoMaxAtencion = self.convertirTiempo(tiempoMaxAtencion)
-                                    graficar.escritorio(numero, listaEscritoriosActivos.dato.getIdentificacionEscritorio(), tiempoMinAtencion, tiempoPromAtencion, tiempoMaxAtencion, clientesAtendidos)
-                                    listaEscritoriosActivos = listaEscritoriosActivos.siguiente                                
-                                    '''print("Tiempo:", tiempo, "minutos")
-                                    print("Tiempo Atencion Minimo:", tiempoMinAtencion)
-                                    print("Tiempo Atencion Promedio:", tiempoPromAtencion)
-                                    print("Tiempo Atencion Maximo:", tiempoMaxAtencion)'''
+                                self.graficarYCalcularTiemposEnPunto(punto, graficar)
+                                self.graficarYCalcularTiemposEnEscritorio(punto, graficar)
                                 graficar.exportar()
                             elif opcion == 2:
                                 listaEscritorios = punto.dato.getEscritorios().valores()
                                 listaEscritoriosActivos = punto.dato.getEscritoriosActivos()
+                                estado = True
                                 while listaEscritorios != None:
-                                    if listaEscritorios.dato.getEstado() == False:
+                                    estado = listaEscritorios.dato.getEstado()
+                                    if estado == False:
                                         listaEscritorios.dato.setEstado(True)
                                         listaEscritoriosActivos.insertar(listaEscritorios.dato)
                                         print("¡Escritorio Activado Exitosamente!")
                                         break
                                     listaEscritorios = listaEscritorios.siguiente
+                                if estado: print("¡No hay escritorios desactivados!")
                             elif opcion == 3:
                                 listaEscritorios = punto.dato.getEscritorios()
                                 listaEscritoriosActivos = punto.dato.getEscritoriosActivos()
@@ -293,18 +188,9 @@ class menuPrincipal:
                                     escritorio.dato.setEstado(False)
                                     print("¡Escritorio Desactivado Exitosamente!")
                                 else:
-                                    print("¡No hay escritorios activos!")
+                                    print("¡No hay escritorios activados!")
                             elif opcion == 4:
-                                listaEscritoriosActivos = punto.dato.getEscritoriosActivos().valores()
-                                listaClientes = punto.dato.getClientes()
-                                while listaEscritoriosActivos != None:
-                                    listaclientesAtendidos = listaEscritoriosActivos.dato.getClientesAtendidos()
-                                    if listaClientes.longitud() > 0:
-                                        clienteAtendido = listaClientes.eliminarPrimero()
-                                        listaclientesAtendidos.insertar(clienteAtendido.dato)
-                                        print(str(listaClientes.longitud()))                                                                      
-                                    else: break  
-                                    listaEscritoriosActivos = listaEscritoriosActivos.siguiente
+                                self.atenderClientes(False, punto)
                             elif opcion == 5:
                                 listaTransaccionesCliente = listaEnlazada()
                                 while True:
@@ -319,43 +205,40 @@ class menuPrincipal:
                                     listaTransaccionesCliente.insertar(nuevaTransaccion)
                                     confirmacion = input("¿Desea agregar otra transaccion? (s/n) ")
                                     if confirmacion == 'n': break                
-                                #print(transaccion.dato.getTiempo())
                                 dpiCliente = input("Ingrese su DPI: ")
                                 nombreCliente = input("Ingrese su nombre: ")
-                                cliente = Cliente(dpiCliente, nombreCliente, listaTransaccionesCliente)
-                                listaClientes = punto.dato.getClientes()
-                                listaClientes.insertar(cliente)
-                                ##################################################
-                                #print(listaTransacciones.dato.getId())  
-                                punto.dato.setTurnoEnPunto()
-                                print("Su turno es -> |",str(punto.dato.getTurnoEnPunto()),"|")
-                                listaClientes = punto.dato.getClientes().valores()
-                                tiempo = 0
-                                tiempoEnCola = 0
-                                tiempoEnEscritorio = 0
-                                tiempoTotal = 0
+                                nuevoCliente = Cliente(dpiCliente, nombreCliente, listaTransaccionesCliente, 0, 0)
+                                ######################################
+                                tiempoEnAtencion = 0
                                 listaTransaccionesCliente = listaTransaccionesCliente.valores()
                                 while listaTransaccionesCliente != None:
                                     transaccion = listaTransacciones.buscarId(listaTransaccionesCliente.dato.getId())
-                                    tiempoEnEscritorio += (int(transaccion.dato.getTiempo())*int(listaTransaccionesCliente.dato.getCantidad()))
+                                    tiempoEnAtencion += transaccion.dato.getTiempo()*listaTransaccionesCliente.dato.getCantidad()
                                     listaTransaccionesCliente = listaTransaccionesCliente.siguiente
-                                while listaClientes != None:
-                                    listaTransaccionesCliente = listaClientes.dato.getTransacciones().valores()
-                                    tiempo = 0
-                                    while listaTransaccionesCliente != None:  
-                                        transaccion = listaTransacciones.buscarId(listaTransaccionesCliente.dato.getId())
-                                        tiempo += (int(transaccion.dato.getTiempo())*int(listaTransaccionesCliente.dato.getCantidad()))
-                                        listaTransaccionesCliente = listaTransaccionesCliente.siguiente                                  
+                                nuevoCliente.setTiempoEnAtencion(tiempoEnAtencion) 
+                                tiempoEnEspera = 0
+                                listaClientes = punto.dato.getClientes().valores()
+                                while listaClientes != None and listaClientes.dato != nuevoCliente:
+                                    tiempoEnEspera += listaClientes.dato.getTiempoEnAtencion()
                                     listaClientes = listaClientes.siguiente
-                                    tiempoEnCola += tiempo
-                                tiempoTotal = tiempoEnCola
-                                tiempoEnCola = tiempoEnCola - tiempoEnEscritorio
-                                tiempoEnCola = self.convertirTiempo(tiempoEnCola)
-                                tiempoEnEscritorio = self.convertirTiempo(tiempoEnEscritorio)
-                                tiempoTotal = self.convertirTiempo(tiempoTotal)
-                                print("Tiempo en cola:", tiempoEnCola)
-                                print("Tiempo en escritorio:", tiempoEnEscritorio)
-                                print("Tiempo total:", tiempoTotal)
+                                nuevoCliente.setTiempoEnEspera(tiempoEnEspera)
+                                listaClientes = punto.dato.getClientes()
+                                listaClientes.insertar(nuevoCliente)
+                                ################################################## 
+                                punto.dato.setTurnoEnPunto()
+                                print("Su turno es -> |",str(punto.dato.getTurnoEnPunto()),"|")
+                                listaClientes = listaClientes.valores()
+                                print("Tiempo en espera:", self.convertirTiempo(tiempoEnEspera))
+                                print("Tiempo en atencion:", self.convertirTiempo(tiempoEnAtencion))
+                                print("Tiempo total:", self.convertirTiempo(tiempoEnEspera+tiempoEnAtencion))
+                            elif opcion == 6:
+                                resultado = self.atenderClientes(True, punto)
+                                if resultado:
+                                    graficar = Grafico()
+                                    graficar.encabezado(empresa.dato.getNombre().upper())
+                                    self.graficarYCalcularTiemposEnPunto(punto, graficar)
+                                    self.graficarYCalcularTiemposEnEscritorio(punto, graficar)
+                                    graficar.exportar()
                             elif opcion == 7: break
                             else: 
                                 print("¡Ingrese una opcion valida!")
@@ -399,7 +282,26 @@ class menuPrincipal:
                     print("¡Ingrese una opcion valida!")
             except ValueError:
                 print("¡Ingrese solo numeros!")
-
+    
+    def atenderClientes(self, atenderATodos, punto):
+        listaEscritoriosActivos = punto.dato.getEscritoriosActivos().valores()
+        listaClientes = punto.dato.getClientes()
+        if listaClientes.longitud() != 0:
+            while listaEscritoriosActivos != None:
+                listaclientesAtendidos = listaEscritoriosActivos.dato.getClientesAtendidos()
+                if listaClientes.longitud() > 0:
+                    clienteAtendido = listaClientes.eliminarPrimero()
+                    listaclientesAtendidos.insertar(clienteAtendido.dato)                                                                   
+                else: break  
+                listaEscritoriosActivos = listaEscritoriosActivos.siguiente
+                if atenderATodos:
+                    if listaEscritoriosActivos == None:
+                        listaEscritoriosActivos = punto.dato.getEscritoriosActivos().valores()
+            return True
+        else: 
+            print("¡No hay clientes pendientes de atender!")
+            return False
+            
     def mostrarEmpresas(self):         
         if self.listaEmpresas.valores() != None:
             numero = 0
@@ -446,7 +348,7 @@ class menuPrincipal:
             while listaTransacciones != None:
                 numero += 1
                 print("|", numero, (2-len(str(numero)))*(" "), "|", listaTransacciones.dato.getId(), (12-len(str(listaTransacciones.dato.getId())))*(" "), "|", listaTransacciones.dato.getNombre(), 
-                (19-len(listaTransacciones.dato.getNombre()))*(" "), "|", listaTransacciones.dato.getTiempo(), (5-len(listaTransacciones.dato.getTiempo()))*(" "), ("|"))
+                (19-len(listaTransacciones.dato.getNombre()))*(" "), "|", listaTransacciones.dato.getTiempo(), (5-len(str(listaTransacciones.dato.getTiempo())))*(" "), ("|"))
                 listaTransacciones = listaTransacciones.siguiente
             print(" ----------------------------------------------------- ")
             return True
@@ -454,22 +356,106 @@ class menuPrincipal:
             print("¡Sin transacciones!")
             return False
 
-    def convertirTiempo(self, tiempo):
-        tiempo = int(tiempo)
-        hora = int((tiempo-(tiempo%60))/60)
-        minuto = tiempo%60
-        tiempo = ""
-        if hora == 1:
-            tiempo += str(hora)+" hora "
-        elif hora > 1:
-            tiempo += str(hora)+" horas "
-        if minuto == 1:
-            tiempo += str(minuto)+" minuto"
-        elif minuto > 1:
-            tiempo += str(minuto)+" minutos"
-        if tiempo == "":
-            return "0"
-        else:
-            return tiempo
+    def graficarYCalcularTiemposEnPunto(self, punto, graficar):
+        tiempoMinEspera = 0
+        tiempoPromEspera = 0
+        tiempoMaxEspera = 0
+        tiempoMinAtencion = 0
+        tiempoPromAtencion = 0
+        tiempoMaxAtencion = 0
+        escritoriosActivos = 0
+        escritoriosInactivos = 0
+        clientesAtendidos = 0
+        clientes = punto.dato.getClientes().longitud()
+        if punto.dato.getClientes() != None:
+            escritoriosActivos = punto.dato.getEscritoriosActivos().longitud()
+            escritoriosInactivos = (punto.dato.getEscritorios().longitud()-escritoriosActivos)
+            listaEscritorios = punto.dato.getEscritorios().valores()
+            while listaEscritorios != None:
+                clientesAtendidos += listaEscritorios.dato.getClientesAtendidos().longitud()
+                listaclientesAtendidos = listaEscritorios.dato.getClientesAtendidos().valores()
+                while listaclientesAtendidos != None:
+                    tiempo = listaclientesAtendidos.dato.getTiempoEnEspera()
+                    if tiempoMinEspera == 0:
+                        tiempoMinEspera = tiempo
+                    if tiempo < tiempoMinEspera:
+                        tiempoMinEspera = tiempo
+                    if tiempo > tiempoMaxEspera:
+                        tiempoMaxEspera = tiempo
+                    tiempoPromEspera += tiempo
+                    tiempo = listaclientesAtendidos.dato.getTiempoEnAtencion()
+                    if tiempoMinAtencion == 0:
+                        tiempoMinAtencion = tiempo
+                    if tiempo < tiempoMinAtencion:
+                        tiempoMinAtencion = tiempo
+                    if tiempo > tiempoMaxAtencion:
+                        tiempoMaxAtencion = tiempo
+                    tiempoPromAtencion += tiempo
+                    listaclientesAtendidos = listaclientesAtendidos.siguiente  
+                listaEscritorios = listaEscritorios.siguiente 
+        if clientesAtendidos > 0:
+            tiempoPromEspera = tiempoPromEspera/clientesAtendidos
+            tiempoPromAtencion = tiempoPromAtencion/clientesAtendidos
+        tiempoMinEspera = self.convertirTiempo(tiempoMinEspera)
+        tiempoPromEspera = self.convertirTiempo(tiempoPromEspera)
+        tiempoMaxEspera = self.convertirTiempo(tiempoMaxEspera)
+        tiempoMinAtencion = self.convertirTiempo(tiempoMinAtencion)
+        tiempoPromAtencion = self.convertirTiempo(tiempoPromAtencion)
+        tiempoMaxAtencion = self.convertirTiempo(tiempoMaxAtencion)
+        print("Tiempo Espera Minimo:", tiempoMinEspera)
+        print("Tiempo Espera Promedio:", tiempoPromEspera)
+        print("Tiempo Espera Maximo:", tiempoMaxEspera)
+        print("Escritorios activos:",str(escritoriosActivos))
+        print("Escritorios inactivos:",str(escritoriosInactivos))
+        print("Tiempo Atencion Minimo:", tiempoMinAtencion)
+        print("Tiempo Atencion Promedio:", tiempoPromAtencion)
+        print("Tiempo Atencion Maximo:", tiempoMaxAtencion)
+        
+        graficar.puntoAtencion(punto.dato.getNombre(), escritoriosActivos, escritoriosInactivos, clientes, clientesAtendidos, tiempoMinEspera, tiempoPromEspera, tiempoMaxEspera, tiempoMinAtencion, tiempoPromAtencion, tiempoMaxAtencion)
 
-menuPrincipal()
+    def graficarYCalcularTiemposEnEscritorio(self, punto, graficar):
+        if punto.dato.getEscritoriosActivos() != None:
+            listaEscritoriosActivos = punto.dato.getEscritoriosActivos().valores()
+            numero = 0
+            while listaEscritoriosActivos != None:
+                numero += 1
+                clientesAtendidos = listaEscritoriosActivos.dato.getClientesAtendidos().longitud()
+                listaclientesAtendidos = listaEscritoriosActivos.dato.getClientesAtendidos().valores()
+                tiempoMinAtencion = 0
+                tiempoPromAtencion = 0
+                tiempoMaxAtencion = 0
+                while listaclientesAtendidos != None:
+                    tiempo = listaclientesAtendidos.dato.getTiempoEnAtencion()
+                    if tiempoMinAtencion == 0:
+                        tiempoMinAtencion = tiempo
+                    if tiempo < tiempoMinAtencion:
+                        tiempoMinAtencion = tiempo
+                    if tiempo > tiempoMaxAtencion:
+                        tiempoMaxAtencion = tiempo
+                    tiempoPromAtencion += tiempo
+                    listaclientesAtendidos = listaclientesAtendidos.siguiente  
+                if clientesAtendidos > 0:
+                    tiempoPromAtencion = tiempoPromAtencion/clientesAtendidos
+                tiempoPromAtencion = self.convertirTiempo(tiempoPromAtencion)
+                tiempoMinAtencion = self.convertirTiempo(tiempoMinAtencion)
+                tiempoMaxAtencion = self.convertirTiempo(tiempoMaxAtencion)
+                graficar.escritorio(numero, listaEscritoriosActivos.dato.getIdentificacionEscritorio(), tiempoMinAtencion, tiempoPromAtencion, tiempoMaxAtencion, clientesAtendidos)
+                listaEscritoriosActivos = listaEscritoriosActivos.siguiente 
+
+    def convertirTiempo(self, tiempo):
+        tiempo = str(round(float(tiempo), 2))
+        minuto = int(tiempo[:tiempo.index(".")])
+        segundo = int(tiempo[tiempo.index(".")+1:])
+        if segundo > 0 and segundo < 10: segundo = segundo*10
+        hora = int((minuto-(minuto%60))/60)
+        minuto = minuto%60 + int(segundo/60)
+        segundo = segundo%60
+        tiempo = ""
+        if hora == 1: tiempo += str(int(hora))+" hora "
+        elif hora > 1: tiempo += str(int(hora))+" horas "
+        if minuto == 1: tiempo += str(int(minuto))+" minuto "
+        elif minuto > 1: tiempo += str(int(minuto))+" minutos "
+        if segundo == 1: tiempo += str(int(segundo))+" segundo"
+        if segundo > 1: tiempo += str(int(segundo))+" segundos"
+        if tiempo == "": return "0"
+        else: return tiempo

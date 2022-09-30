@@ -106,21 +106,3 @@ class listaEnlazada:
         while actual != None:
             print(actual.dato)
             actual = actual.siguiente
-
-'''lista = listaEnlazada()
-lista.insertar(1)
-lista.insertar(2)
-lista.insertar(3)
-lista.insertar(4)
-
-lista.recorrer()
-
-eliminado = lista.eliminar()
-print(eliminado.dato)
-
-lista.recorrer()
-
-eliminado = lista.eliminar()
-print(eliminado.dato)
-
-lista.recorrer()'''

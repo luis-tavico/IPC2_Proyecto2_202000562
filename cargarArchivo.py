@@ -8,7 +8,10 @@ from modeloCliente import Cliente
 
 class CargarArchivo:
 
-    def leerArchivoConfiguracionSistema(self, ruta, listaEmpresas): 
+    def __init__(self, listaEmpresas):
+        self.listaEmpresas = listaEmpresas
+
+    def leerArchivoConfiguracionSistema(self, ruta): 
         archivo_xml = ET.parse(ruta)
         empresas = archivo_xml.getroot()
   
@@ -37,51 +40,26 @@ class CargarArchivo:
                 for transaccion in transacciones:
                     idTransaccion = transaccion.attrib['id']
                     nombreTransaccion = transaccion.find('nombre').text
-                    tiempoAtencion = transaccion.find('tiempoAtencion').text
+                    tiempoAtencion = int(transaccion.find('tiempoAtencion').text)
                     nuevaTransaccion = Transaccion(id=idTransaccion, nombre=nombreTransaccion, tiempo=tiempoAtencion)
                     listaTransacciones.insertar(nuevaTransaccion)
             nuevaEmpresa = Empresa(idEmpresa, nombreEmpresa, abreviaturaEmpresa, listaPuntosAtencion, listaTransacciones)
-            listaEmpresas.insertar(nuevaEmpresa)
+            self.listaEmpresas.insertar(nuevaEmpresa)     
 
-        '''empresaEnLista = listaEmpresas.valores()
-        print(empresaEnLista.dato.getId())
-        print(empresaEnLista.dato.getNombre())
-        print(empresaEnLista.dato.getAbreviatura())
-        puntosAtencionEnLista = empresaEnLista.dato.getPuntosDeAtencion().valores()
-        while puntosAtencionEnLista != None:
-            print(puntosAtencionEnLista.dato.getId())
-            print(puntosAtencionEnLista.dato.getNombre())
-            print(puntosAtencionEnLista.dato.getDireccion())
-            escritoriosEnLista = puntosAtencionEnLista.dato.getEscritorios().valores()
-            while escritoriosEnLista != None:
-                print(escritoriosEnLista.dato.getId())
-                print(escritoriosEnLista.dato.getIdentificacionEscritorio())
-                print(escritoriosEnLista.dato.getNombreEncargado())
-                print(escritoriosEnLista.dato.getEstado())
-                escritoriosEnLista = escritoriosEnLista.siguiente
-            puntosAtencionEnLista = puntosAtencionEnLista.siguiente
-        transaccionesEnLista = empresaEnLista.dato.getTransacciones().valores()
-        while transaccionesEnLista != None:
-            print(transaccionesEnLista.dato.getId())
-            print(transaccionesEnLista.dato.getNombre())
-            print(transaccionesEnLista.dato.getTiempo())
-            print(transaccionesEnLista.dato.getCantidad())
-            transaccionesEnLista = transaccionesEnLista.siguiente'''        
-
-    def leerArchivoConfiguracionInicial(self, ruta, listaEmpresas):
+    def leerArchivoConfiguracionInicial(self, ruta):
         archivo_xml = ET.parse(ruta)
         estadoInicial = archivo_xml.getroot()
 
         for configInicial in estadoInicial:
             id = configInicial.attrib['id']
-            idEmpresa = configInicial.attrib['idEmpresa']      
+            idEmpresa = configInicial.attrib['idEmpresa']     
             idPunto = configInicial.attrib['idPunto']
-            empresa = listaEmpresas.buscarId(idEmpresa)
+            empresa = self.listaEmpresas.buscarId(idEmpresa)
+            listaTransaccionesEmpresa = empresa.dato.getTransacciones()
             listaPuntos = empresa.dato.getPuntosDeAtencion()
             punto = listaPuntos.buscarId(idPunto)
             listaEscritorios = punto.dato.getEscritorios()
             listaEscritoriosActivos = punto.dato.getEscritoriosActivos()
-            listaClientes = punto.dato.getClientes()
             for escritoriosActivos in configInicial.findall('escritoriosActivos'):
                 for escritorio in escritoriosActivos:
                     idEscritorio = escritorio.attrib['idEscritorio']
@@ -90,51 +68,30 @@ class CargarArchivo:
                     escritorio.dato.setEstado(True)
             for clientes in configInicial.findall('listadoClientes'):  
                 for cliente in clientes:
+                    listaClientes = punto.dato.getClientes()
                     punto.dato.setTurnoEnPunto()
                     dpiCliente = cliente.attrib['dpi']
                     nombreCliente = cliente.find('nombre').text
-                    listaTransacciones = listaEnlazada()
+                    nuevoCliente = Cliente(dpiCliente, nombreCliente, listaEnlazada(), 0, 0)
+                    listaTransaccionesCliente = nuevoCliente.getTransacciones()
                     for listadoTransacciones in cliente.findall('listadoTransacciones'):
                         for transaccion in listadoTransacciones:
                             idTransaccion = transaccion.attrib['idTransaccion']
-                            cantidad = transaccion.attrib['cantidad']
+                            cantidad = int(transaccion.attrib['cantidad'])
                             nuevaTransaccion = Transaccion(id=idTransaccion, cantidad=cantidad)
-                            listaTransacciones.insertar(nuevaTransaccion)
-                    nuevoCliente = Cliente(dpiCliente, nombreCliente, listaTransacciones)
+                            listaTransaccionesCliente.insertar(nuevaTransaccion)
+                    tiempoEnAtencion = 0
+                    listaTransaccionesCliente = listaTransaccionesCliente.valores()
+                    while listaTransaccionesCliente != None:
+                        transaccion = listaTransaccionesEmpresa.buscarId(listaTransaccionesCliente.dato.getId())
+                        tiempoEnAtencion += transaccion.dato.getTiempo()*listaTransaccionesCliente.dato.getCantidad()
+                        listaTransaccionesCliente = listaTransaccionesCliente.siguiente
+                    nuevoCliente.setTiempoEnAtencion(tiempoEnAtencion) 
+                    tiempoEnEspera = 0
+                    listaClientes = listaClientes.valores()
+                    while listaClientes != None and listaClientes.dato != nuevoCliente:
+                        tiempoEnEspera += listaClientes.dato.getTiempoEnAtencion()
+                        listaClientes = listaClientes.siguiente
+                    nuevoCliente.setTiempoEnEspera(tiempoEnEspera)
+                    listaClientes = punto.dato.getClientes()
                     listaClientes.insertar(nuevoCliente)
-
-
-        '''clientesEnLista = listaClientes.valores()
-        print(clientesEnLista.dato.getId())
-        print(clientesEnLista.dato.getNombre())'''
-
-        '''empresaEnLista = listaEmpresas.valores()
-        print(empresaEnLista.dato.getId())
-        print(empresaEnLista.dato.getNombre())
-        print(empresaEnLista.dato.getAbreviatura())
-        puntosAtencionEnLista = empresaEnLista.dato.getPuntosDeAtencion().valores()
-        while puntosAtencionEnLista != None:
-            print(puntosAtencionEnLista.dato.getId())
-            print(puntosAtencionEnLista.dato.getNombre())
-            print(puntosAtencionEnLista.dato.getDireccion())
-            escritoriosEnLista = puntosAtencionEnLista.dato.getEscritorios().valores()
-            while escritoriosEnLista != None:
-                print(escritoriosEnLista.dato.getId())
-                print(escritoriosEnLista.dato.getIdentificacionEscritorio())
-                print(escritoriosEnLista.dato.getNombreEncargado())
-                print(escritoriosEnLista.dato.getEstado())
-                escritoriosEnLista = escritoriosEnLista.siguiente
-            puntosAtencionEnLista = puntosAtencionEnLista.siguiente
-        transaccionesEnLista = empresaEnLista.dato.getTransacciones().valores()
-        while transaccionesEnLista != None:
-            print(transaccionesEnLista.dato.getId())
-            print(transaccionesEnLista.dato.getNombre())
-            print(transaccionesEnLista.dato.getTiempo())
-            print(transaccionesEnLista.dato.getCantidad())
-            transaccionesEnLista = transaccionesEnLista.siguiente''' 
-
-'''listaEmpresas = listaEnlazada()
-archivo = CargarArchivo()
-archivo.leerArchivoConfiguracionSistema("ConfiguracionSistema2.xml", listaEmpresas)
-print("-----------")
-archivo.leerArchivoConfiguracionInicial("ConfiguracionInicial2.xml", listaEmpresas)'''
