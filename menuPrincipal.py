@@ -185,7 +185,7 @@ class MenuPrincipal:
                                         self.recorrer(punto)
                                         break
                                     listaEscritorios = listaEscritorios.siguiente
-                                if estado: print("¡No hay escritorios desactivados!")
+                                if estado: print("¡No hay escritorios desactivados por activar!")
                             elif opcion == 3:
                                 listaEscritorios = punto.dato.getEscritorios()
                                 listaEscritoriosActivos = punto.dato.getEscritoriosActivos()
@@ -199,7 +199,7 @@ class MenuPrincipal:
                                     self.calcularTiempoEnEspera(listaEscritoriosActivos, listaClientesEnPunto, listaClientes)
                                     self.recorrer(punto)
                                 else:
-                                    print("¡No hay escritorios activados!")
+                                    print("¡No hay escritorios activados por desactivar!")
                             elif opcion == 4:
                                 self.atenderClientes(False, punto)
                             elif opcion == 5:
