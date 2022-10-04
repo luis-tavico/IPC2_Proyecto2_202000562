@@ -1,3 +1,5 @@
+from listaEnlazada import listaEnlazada
+
 class Empresa:
 
     def __init__(self, id, nombre, abreviatura, puntosAtencion, transacciones):

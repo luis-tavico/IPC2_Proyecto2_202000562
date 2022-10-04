@@ -32,6 +32,25 @@
                     <transaccion idTransaccion="transaccion2" cantidad="1" />
                 </listadoTransacciones>
             </cliente>
+            <cliente dpi="3848359830101">
+                <nombre>Ximena</nombre>
+                <listadoTransacciones>
+                    <transaccion idTransaccion="transaccion1" cantidad="2" />
+                </listadoTransacciones>
+            </cliente>
+            <cliente dpi="3848359830101">
+                <nombre>Pedro</nombre>
+                <listadoTransacciones>
+                    <transaccion idTransaccion="transaccion1" cantidad="2" />
+                    <transaccion idTransaccion="transaccion2" cantidad="2" />
+                </listadoTransacciones>
+            </cliente>
+            <cliente dpi="3848359830101">
+                <nombre>David</nombre>
+                <listadoTransacciones>
+                    <transaccion idTransaccion="transaccion1" cantidad="2" />
+                </listadoTransacciones>
+            </cliente>
         </listadoClientes>
     </configInicial>
 </listadoInicial>

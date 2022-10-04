@@ -69,6 +69,7 @@ class CargarArchivo:
             for clientes in configInicial.findall('listadoClientes'):  
                 for cliente in clientes:
                     listaClientes = punto.dato.getClientes()
+                    listaClientesEnPunto = punto.dato.getClientes()
                     punto.dato.setTurnoEnPunto()
                     dpiCliente = cliente.attrib['dpi']
                     nombreCliente = cliente.find('nombre').text
@@ -87,11 +88,32 @@ class CargarArchivo:
                         tiempoEnAtencion += transaccion.dato.getTiempo()*listaTransaccionesCliente.dato.getCantidad()
                         listaTransaccionesCliente = listaTransaccionesCliente.siguiente
                     nuevoCliente.setTiempoEnAtencion(tiempoEnAtencion) 
-                    tiempoEnEspera = 0
-                    listaClientes = listaClientes.valores()
-                    while listaClientes != None and listaClientes.dato != nuevoCliente:
-                        tiempoEnEspera += listaClientes.dato.getTiempoEnAtencion()
-                        listaClientes = listaClientes.siguiente
-                    nuevoCliente.setTiempoEnEspera(tiempoEnEspera)
-                    listaClientes = punto.dato.getClientes()
                     listaClientes.insertar(nuevoCliente)
+                    ######################################################################
+                    self.calcularTiempoEnEspera(listaEscritoriosActivos, listaClientesEnPunto, listaClientes)
+                
+    def calcularTiempoEnEspera(self, listaEscritoriosActivos, listaClientesEnPunto, listaClientes):
+        cantidadEscritoriosActivos = listaEscritoriosActivos.longitud()
+        listaClientes = listaClientes.valores()
+        if cantidadEscritoriosActivos == 0 or cantidadEscritoriosActivos == 1:
+            tiempoEnEspera = 0
+            while listaClientes != None and listaClientesEnPunto.longitud() > 1:
+                tiempoEnEspera += listaClientes.dato.getTiempoEnAtencion()
+                if listaClientes.siguiente != None:
+                    listaClientes.siguiente.dato.setTiempoEnEspera(tiempoEnEspera)
+                listaClientes = listaClientes.siguiente
+        else:
+            if listaClientesEnPunto.longitud() >= 1:
+                tiempoEnEspera = listaClientesEnPunto.buscarPosicion(1).dato.getTiempoEnEspera()
+            tiempoMax = 0
+            while listaClientes != None:
+                tiempoEnEspera += tiempoMax
+                tiempoMax = 0 
+                cantidadEscritoriosActivos = listaEscritoriosActivos.longitud()
+                while cantidadEscritoriosActivos > 0 and listaClientes != None:
+                    listaClientes.dato.setTiempoEnEspera(tiempoEnEspera)
+                    tiempo = listaClientes.dato.getTiempoEnAtencion()
+                    if tiempo > tiempoMax:
+                        tiempoMax = tiempo
+                    cantidadEscritoriosActivos -= 1
+                    listaClientes = listaClientes.siguiente          
