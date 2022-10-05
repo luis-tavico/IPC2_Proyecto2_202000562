@@ -31,11 +31,11 @@ class Grafico:
         self.graphviz += '    saltoLinea[label="." fontcolor=white]\n'
         self.graphviz += '    TablaPunto->saltoLinea\n'
 
-    def escritorio(self, numero, identificacionEscritorio, tiempoMinimo, tiempoPromedio, tiempoMaximo, atendidos):
+    def escritorio(self, numero, identificacionEscritorio, nombreEncargado, tiempoMinimo, tiempoPromedio, tiempoMaximo, atendidos):
         if numero == 1: nodo = "saltoLinea" 
         else: nodo = "TablaEscritorio"+str(numero-1)
         self.graphviz += '    TablaEscritorio'+str(numero)+' [label=<<table border="0" cellborder="0" cellspacing="5">\n'
-        self.graphviz += '        <tr><td><font color="blue">'+identificacionEscritorio+'</font></td></tr>\n'
+        self.graphviz += '        <tr><td><font color="blue">ID: '+identificacionEscritorio+'    Encargado: '+nombreEncargado+'</font></td></tr>\n'
         self.graphviz += '    <tr><td><table border="0" cellborder="0" cellspacing="5">\n'
         self.graphviz += '        <tr><td>Tiempo Atencion</td><td>Clientes</td></tr>\n'
         self.graphviz += '    <tr><td><table border="0" cellborder="1" cellspacing="0">\n'

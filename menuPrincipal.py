@@ -66,7 +66,9 @@ class MenuPrincipal:
                                     nombreEmpresa = input("Ingrese el nombre de la empresa: ")
                                     abreviatura = input("Ingrese la abreviatura de la empresa: ")
                                     empresa = Empresa(idEmpresa, nombreEmpresa, abreviatura, listaEnlazada(), listaEnlazada())
-                                    self.listaEmpresas.insertar(empresa)
+                                    if self.listaEmpresas.buscarId(idEmpresa) == None:
+                                        self.listaEmpresas.insertar(empresa)
+                                    else: print("¡La empresa ya existe! Se conservo la primera en ser ingresada")
                                     empresa = self.listaEmpresas.buscarId(idEmpresa)
                                 elif opcion == 2:
                                     resultado = self.mostrarEmpresas()
@@ -233,7 +235,6 @@ class MenuPrincipal:
                                     listaClientes.insertar(nuevoCliente)
                                     listaEscritoriosActivos = punto.dato.getEscritoriosActivos()
                                     self.calcularTiempoEnEspera(listaEscritoriosActivos, listaClientesEnPunto, listaClientes)
-                                    self.recorrer(punto) 
                                     punto.dato.setTurnoEnPunto()
                                     print("Su turno es -> |",str(punto.dato.getTurnoEnPunto()),"|")
                                     print("Tiempo en espera:", self.convertirTiempo(nuevoCliente.getTiempoEnEspera()))
@@ -305,29 +306,19 @@ class MenuPrincipal:
         listaEscritoriosActivos = punto.dato.getEscritoriosActivos().valores()
         listaClientes = punto.dato.getClientes()
         if listaClientes.longitud() != 0:
-            if atenderATodos == False:
-                clientesFinalizados = listaEnlazada()
             if listaEscritoriosActivos != None:
+                print("-----------------Finalizados-----------------")
                 while listaEscritoriosActivos != None:
                     listaclientesAtendidos = listaEscritoriosActivos.dato.getClientesAtendidos()
                     if listaClientes.longitud() > 0:
                         clienteAtendido = listaClientes.eliminarPrimero()
                         listaclientesAtendidos.insertar(clienteAtendido.dato)
-                        if atenderATodos == False: clientesFinalizados.insertar(clienteAtendido.dato)                                                             
+                        print("Cliente", clienteAtendido.dato.getNombre(), "atendido en escritorio", listaEscritoriosActivos.dato.getIdentificacionEscritorio())                                                          
                     else: break  
                     listaEscritoriosActivos = listaEscritoriosActivos.siguiente
                     if atenderATodos:
                         if listaEscritoriosActivos == None:
                             listaEscritoriosActivos = punto.dato.getEscritoriosActivos().valores()
-                if atenderATodos:
-                    return True
-                else:
-                    clientesFinalizados = clientesFinalizados.valores()
-                    print("-----------------Finalizados-----------------")
-                    while clientesFinalizados != None:
-                        print("Cliente", clientesFinalizados.dato.getNombre(), "atendido.")
-                        clientesFinalizados = clientesFinalizados.siguiente
-                    return True
             else:
                 print("¡No hay escritorios activos! No se pudo realizar la operacion.")
                 return False
@@ -365,15 +356,15 @@ class MenuPrincipal:
         if self.listaEmpresas.valores() != None:
             numero = 0
             empresaEnLista = self.listaEmpresas.valores()
-            print(" ------------------------------------------------------------------- ")
-            print("| No. |     Id        |        Nombre        |     Abreviatura      |")
-            print("|-------------------------------------------------------------------|")
+            print(" ----------------------------------------------------------------------- ")
+            print("| No. |    Id     |            Nombre            |     Abreviatura      |")
+            print("|-----------------------------------------------------------------------|")
             while empresaEnLista != None:
                 numero += 1
-                print("|", numero, (2-len(str(numero)))*(" "), "|", empresaEnLista.dato.getId(), (12-len(str(empresaEnLista.dato.getId())))*(" "), "|", empresaEnLista.dato.getNombre(),
-                (19-len(empresaEnLista.dato.getNombre()))*(" "), ("|"), empresaEnLista.dato.getAbreviatura(), (19-len(str(empresaEnLista.dato.getAbreviatura())))*(" "), "|")
+                print("|", numero, (2-len(str(numero)))*(" "), "|", empresaEnLista.dato.getId(), (8-len(str(empresaEnLista.dato.getId())))*(" "), "|", empresaEnLista.dato.getNombre(),
+                (27-len(empresaEnLista.dato.getNombre()))*(" "), ("|"), empresaEnLista.dato.getAbreviatura(), (19-len(str(empresaEnLista.dato.getAbreviatura())))*(" "), "|")
                 empresaEnLista = empresaEnLista.siguiente
-            print(" ------------------------------------------------------------------- ")
+            print(" ----------------------------------------------------------------------- ")
             return True
         else:
             print("¡Sistema vacio!")
@@ -383,15 +374,15 @@ class MenuPrincipal:
         if listaPuntosAtencion.valores() != None:
             numero = 0
             listaPuntosAtencion = listaPuntosAtencion.valores()   
-            print(" ------------------------------------------------------------------ ")
-            print("| No. |     Id        |        Nombre        |      Direccion      |")
-            print("|------------------------------------------------------------------|")
+            print(" ------------------------------------------------------------------------- ")
+            print("| No. |    Id     |            Nombre            |       Direccion        |")
+            print("|-------------------------------------------------------------------------|")
             while listaPuntosAtencion != None:
                 numero += 1
-                print("|", numero, (2-len(str(numero)))*(" "), "|", listaPuntosAtencion.dato.getId(), (12-len(str(listaPuntosAtencion.dato.getId())))*(" "), "|", listaPuntosAtencion.dato.getNombre(), 
-                (19-len(listaPuntosAtencion.dato.getNombre()))*(" "), "|", listaPuntosAtencion.dato.getDireccion(), (18-len(listaPuntosAtencion.dato.getDireccion()))*(" "), ("|"))
+                print("|", numero, (2-len(str(numero)))*(" "), "|", listaPuntosAtencion.dato.getId(), (8-len(str(listaPuntosAtencion.dato.getId())))*(" "), "|", listaPuntosAtencion.dato.getNombre(), 
+                (27-len(listaPuntosAtencion.dato.getNombre()))*(" "), "|", listaPuntosAtencion.dato.getDireccion(), (21-len(listaPuntosAtencion.dato.getDireccion()))*(" "), ("|"))
                 listaPuntosAtencion = listaPuntosAtencion.siguiente
-            print(" ------------------------------------------------------------------ ")
+            print(" ------------------------------------------------------------------------- ")
             return True
         else:
             print("¡Sin puntos de atencion!")
@@ -401,15 +392,15 @@ class MenuPrincipal:
         if listaTransacciones.valores() != None:
             numero = 0
             listaTransacciones = listaTransacciones.valores()
-            print(" ----------------------------------------------------- ")
-            print("| No. |     Id        |        Nombre        | Tiempo |")
-            print("|-----------------------------------------------------|")
+            print(" --------------------------------------------------------- ")
+            print("| No. |    Id     |            Nombre            | Tiempo |")
+            print("|---------------------------------------------------------|")
             while listaTransacciones != None:
                 numero += 1
-                print("|", numero, (2-len(str(numero)))*(" "), "|", listaTransacciones.dato.getId(), (12-len(str(listaTransacciones.dato.getId())))*(" "), "|", listaTransacciones.dato.getNombre(), 
-                (19-len(listaTransacciones.dato.getNombre()))*(" "), "|", listaTransacciones.dato.getTiempo(), (5-len(str(listaTransacciones.dato.getTiempo())))*(" "), ("|"))
+                print("|", numero, (2-len(str(numero)))*(" "), "|", listaTransacciones.dato.getId(), (8-len(str(listaTransacciones.dato.getId())))*(" "), "|", listaTransacciones.dato.getNombre(), 
+                (27-len(listaTransacciones.dato.getNombre()))*(" "), "|", listaTransacciones.dato.getTiempo(), (5-len(str(listaTransacciones.dato.getTiempo())))*(" "), ("|"))
                 listaTransacciones = listaTransacciones.siguiente
-            print(" ----------------------------------------------------- ")
+            print(" --------------------------------------------------------- ")
             return True
         else:
             print("¡Sin transacciones!")
@@ -489,7 +480,7 @@ class MenuPrincipal:
                 tiempoPromAtencion = self.convertirTiempo(tiempoPromAtencion)
                 tiempoMinAtencion = self.convertirTiempo(tiempoMinAtencion)
                 tiempoMaxAtencion = self.convertirTiempo(tiempoMaxAtencion)
-                graficar.escritorio(numero, listaEscritoriosActivos.dato.getIdentificacionEscritorio(), tiempoMinAtencion, tiempoPromAtencion, tiempoMaxAtencion, clientesAtendidos)
+                graficar.escritorio(numero, listaEscritoriosActivos.dato.getIdentificacionEscritorio(), listaEscritoriosActivos.dato.getNombreEncargado(), tiempoMinAtencion, tiempoPromAtencion, tiempoMaxAtencion, clientesAtendidos)
                 listaEscritoriosActivos = listaEscritoriosActivos.siguiente 
 
     def convertirTiempo(self, tiempo):

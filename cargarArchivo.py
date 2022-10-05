@@ -21,30 +21,31 @@ class CargarArchivo:
             idEmpresa = empresa.attrib['id']
             nombreEmpresa = empresa.find('nombre').text
             abreviaturaEmpresa = empresa.find('abreviatura').text
-            for puntosDeAtencion in empresa.findall('listaPuntosAtencion'):
-                for puntoDeAtencion in puntosDeAtencion:
-                    idPuntoAtencion = puntoDeAtencion.attrib['id']
-                    nombrePuntoServicio = puntoDeAtencion.find('nombre').text
-                    direccionPuntoServicio = puntoDeAtencion.find('direccion').text
-                    for escritorios in puntoDeAtencion.findall('listaEscritorios'):
-                        listaEscritorios = listaEnlazada()
-                        for escritorio in escritorios:
-                            idEscritorio = escritorio.attrib['id']
-                            identificacion = escritorio.find('identificacion').text
-                            nombreEncargado = escritorio.find('encargado').text
-                            nuevoEscritorio = Escritorio(idEscritorio, identificacion, nombreEncargado, False, listaEnlazada())
-                            listaEscritorios.insertar(nuevoEscritorio)
-                    nuevoPuntoAtencion = PuntoAtencion(idPuntoAtencion, nombrePuntoServicio, direccionPuntoServicio, listaEscritorios, listaEnlazada(), listaEnlazada())
-                    listaPuntosAtencion.insertar(nuevoPuntoAtencion)
-            for transacciones in empresa.findall('listaTransacciones'):
-                for transaccion in transacciones:
-                    idTransaccion = transaccion.attrib['id']
-                    nombreTransaccion = transaccion.find('nombre').text
-                    tiempoAtencion = int(transaccion.find('tiempoAtencion').text)
-                    nuevaTransaccion = Transaccion(id=idTransaccion, nombre=nombreTransaccion, tiempo=tiempoAtencion)
-                    listaTransacciones.insertar(nuevaTransaccion)
-            nuevaEmpresa = Empresa(idEmpresa, nombreEmpresa, abreviaturaEmpresa, listaPuntosAtencion, listaTransacciones)
-            self.listaEmpresas.insertar(nuevaEmpresa)     
+            if self.listaEmpresas.buscarId(idEmpresa) == None:
+                for puntosDeAtencion in empresa.findall('listaPuntosAtencion'):
+                    for puntoDeAtencion in puntosDeAtencion:
+                        idPuntoAtencion = puntoDeAtencion.attrib['id']
+                        nombrePuntoServicio = puntoDeAtencion.find('nombre').text
+                        direccionPuntoServicio = puntoDeAtencion.find('direccion').text
+                        for escritorios in puntoDeAtencion.findall('listaEscritorios'):
+                            listaEscritorios = listaEnlazada()
+                            for escritorio in escritorios:
+                                idEscritorio = escritorio.attrib['id']
+                                identificacion = escritorio.find('identificacion').text
+                                nombreEncargado = escritorio.find('encargado').text
+                                nuevoEscritorio = Escritorio(idEscritorio, identificacion, nombreEncargado, False, listaEnlazada())
+                                listaEscritorios.insertar(nuevoEscritorio)
+                        nuevoPuntoAtencion = PuntoAtencion(idPuntoAtencion, nombrePuntoServicio, direccionPuntoServicio, listaEscritorios, listaEnlazada(), listaEnlazada())
+                        listaPuntosAtencion.insertar(nuevoPuntoAtencion)
+                for transacciones in empresa.findall('listaTransacciones'):
+                    for transaccion in transacciones:
+                        idTransaccion = transaccion.attrib['id']
+                        nombreTransaccion = transaccion.find('nombre').text
+                        tiempoAtencion = int(transaccion.find('tiempoAtencion').text)
+                        nuevaTransaccion = Transaccion(id=idTransaccion, nombre=nombreTransaccion, tiempo=tiempoAtencion)
+                        listaTransacciones.insertar(nuevaTransaccion)
+                nuevaEmpresa = Empresa(idEmpresa, nombreEmpresa, abreviaturaEmpresa, listaPuntosAtencion, listaTransacciones)
+                self.listaEmpresas.insertar(nuevaEmpresa)     
 
     def leerArchivoConfiguracionInicial(self, ruta):
         archivo_xml = ET.parse(ruta)
